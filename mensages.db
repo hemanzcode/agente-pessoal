@@ -1,0 +1,21 @@
+import sqlite3
+
+# Inicializa o banco de dados
+conn = sqlite3.connect('mensagens.db')
+cursor = conn.cursor()
+cursor.execute('''CREATE TABLE IF NOT EXISTS historico (
+    id INTEGER PRIMARY KEY,
+    usuario TEXT,
+    mensagem TEXT,
+    timestamp TEXT
+)''')
+conn.commit()
+
+def salvar_historico(usuario, mensagem, timestamp):
+    cursor.execute("INSERT INTO historico (usuario, mensagem, timestamp) VALUES (?, ?, ?)",
+                  (usuario, mensagem, timestamp))
+    conn.commit()
+
+def carregar_historico():
+    cursor.execute("SELECT * FROM historico ORDER BY id DESC LIMIT 12")
+    return cursor.fetchall()
